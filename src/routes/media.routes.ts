@@ -1,5 +1,6 @@
 import { Router } from 'express'
-import { getImagesController, uploadImagesController } from '~/controllers/media.controllers'
+import { getPhotosController, uploadPhotosController, updatePhotoController } from '~/controllers/media.controllers'
+import { updatePhotoValidator } from '~/middlewares/media.middlewares'
 import { requestHandlerWrapper } from '~/utils/handlers'
 
 const mediaRouter = Router()
@@ -10,13 +11,20 @@ const mediaRouter = Router()
  * Method: POST
  * Body: { image: File[], name: string[], description: string[] }
  */
-mediaRouter.post('/upload-image', requestHandlerWrapper(uploadImagesController))
+mediaRouter.post('/photos', requestHandlerWrapper(uploadPhotosController))
 
 /**
  * Description. Get photos
  * Path: /media/photos
  * Method: GET
  */
-mediaRouter.get('/photos', requestHandlerWrapper(getImagesController))
+mediaRouter.get('/photos', requestHandlerWrapper(getPhotosController))
+
+/**
+ * Description. Edit photos
+ * Path: /media/photos/:id
+ * Method: PUT
+ */
+mediaRouter.put('/photos/:id', updatePhotoValidator, requestHandlerWrapper(updatePhotoController))
 
 export default mediaRouter

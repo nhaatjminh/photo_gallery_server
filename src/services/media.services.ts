@@ -79,6 +79,26 @@ class MediaService {
     const result = await cursor.toArray()
     return result
   }
+
+  async handleEditPhoto(_id: string, name: string, description: string) {
+    const result = await databaseService.photos.findOneAndUpdate(
+      { _id: new ObjectId(_id) },
+      {
+        $set: {
+          name: name,
+          description: description
+        },
+        $currentDate: {
+          updated_at: true
+        }
+      },
+      {
+        returnDocument: 'after'
+      }
+    )
+
+    return result
+  }
 }
 
 const mediaService = new MediaService()
