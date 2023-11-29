@@ -1,8 +1,6 @@
-import { randomUUID } from 'crypto'
 import { Request } from 'express'
 import formidable, { File } from 'formidable'
 import fs from 'fs'
-import path from 'path'
 import { UPLOAD_IMAGE_TEMP_DIR, UPLOAD_THUMBNAIL_DIR } from '~/constants/dir'
 import { parseFieldsFormData } from './common'
 
@@ -62,9 +60,4 @@ export const getFileName = (fullname: string) => {
   const namearr = fullname.split('.')
   namearr.pop()
   return namearr.join('')
-}
-
-export const getExtension = (filename: string) => {
-  const namearr = filename.split('.')
-  return namearr[namearr.length - 1]
 }

@@ -1,6 +1,6 @@
 import { CompleteMultipartUploadCommandOutput } from '@aws-sdk/client-s3'
 import { Request } from 'express'
-import { getFileName, handleUploadImage } from '~/utils/files'
+import { handleUploadImage } from '~/utils/files'
 import fsPromise from 'fs/promises'
 import sharp from 'sharp'
 import path from 'path'
@@ -69,6 +69,15 @@ class MediaService {
     await databaseService.photos.insertMany(insertData)
 
     return insertData
+  }
+
+  async handleGetPhotos(limit: number, offset: number) {
+    const cursor = databaseService.photos
+      .find({})
+      .skip(offset * limit)
+      .limit(limit)
+    const result = await cursor.toArray()
+    return result
   }
 }
 
