@@ -3,10 +3,17 @@ import { Request } from 'express'
 import formidable, { File } from 'formidable'
 import fs from 'fs'
 import path from 'path'
-import { UPLOAD_IMAGE_TEMP_DIR } from '~/constants/dir'
+import { UPLOAD_IMAGE_TEMP_DIR, UPLOAD_THUMBNAIL_DIR } from '~/constants/dir'
+import { parseFieldsFormData } from './common'
+
+export interface PhotosData {
+  name: string[]
+  description: string[]
+  image: File[]
+}
 
 export const initFolder = () => {
-  ;[UPLOAD_IMAGE_TEMP_DIR].forEach((dir) => {
+  ;[UPLOAD_IMAGE_TEMP_DIR, UPLOAD_THUMBNAIL_DIR].forEach((dir) => {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, {
         recursive: true // create nested folder
@@ -31,7 +38,7 @@ export const handleUploadImage = async (req: Request) => {
     }
   })
 
-  return new Promise<File[]>((resolve, reject) => {
+  return new Promise<PhotosData>((resolve, reject) => {
     form.parse(req, (err, fields, files) => {
       if (err) {
         return reject(err)
@@ -40,7 +47,13 @@ export const handleUploadImage = async (req: Request) => {
       if (!Boolean(files.image)) {
         return reject(new Error('File is empty'))
       }
-      resolve(files.image as File[])
+      // eslint-disable-next-line no-extra-boolean-cast
+      const image = files.image as File[]
+      const result = {
+        ...parseFieldsFormData(fields as any),
+        image: image
+      }
+      resolve(result as PhotosData)
     })
   })
 }
