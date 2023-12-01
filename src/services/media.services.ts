@@ -72,7 +72,7 @@ class MediaService {
   }
 
   async handleGetPhotos(limit: number, offset: number) {
-    const cursor = databaseService.photos.find({}).skip(offset).limit(limit)
+    const cursor = databaseService.photos.find({}).skip(offset).sort({ created_at: -1 }).limit(limit)
     const result = await cursor.toArray()
     return result
   }
